@@ -24,6 +24,7 @@ Route::group(['middleware' => ['auth', 'web']], function() {
 
 	Route::group(['prefix' => 'api', 'namespace' => 'Api'], function () {
         Route::get('/todo', 'TodoController@all');
+        Route::post('/todo-dt', 'TodoController@all_datatables');
 	});
 });
 Route::auth();
