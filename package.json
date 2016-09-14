@@ -21,6 +21,7 @@
     "gulp-util": "^3.0.2",
     "tiny-lr": "^0.1.4",
     "run-sequence": "^1.1.4",
-    "yargs": "^3.24.0"
+    "yargs": "^3.24.0",
+    "gulp-angular-templatecache": "^1.8.0"
   }
 }

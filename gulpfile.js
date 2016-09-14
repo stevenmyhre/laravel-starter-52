@@ -53,7 +53,7 @@ gulp.task('css', function() {
 });
 
 gulp.task('dashboard_app', function (done) {
-    var arr = ["./public/dashboard_app/**/*.js"];
+    var arr = ["./public/js/shared/globalErrors.js", "./public/dashboard_app/**/*.js"];
     if(argv.production) {
         arr.push('./public/build/dashboard_templates.js');
     }
@@ -101,17 +101,59 @@ gulp.task('build', function() {
     return runSequence(
         'cleanup',
         'dashboard_templates',
-        'default'
+        'default',
+        'vendor'
     );
 });
-
-
 
 gulp.task('default', function() {
     runSequence(
         'css',
         'dashboard_app'
     );
+});
+
+gulp.task('vendor', function (done) {
+    var sources = [
+        "./public/vendor/jquery/dist/jquery.min.js",
+        "./public/vendor/bootstrap-sass/assets/javascripts/bootstrap.js",
+        "./public/vendor/moment/min/moment.min.js",
+        // "./public/vendor/jQuery-Mask-Plugin/dist/jquery.mask.min.js",
+        "./public/vendor/datatables/media/js/jquery.dataTables.min.js",
+        "./public/vendor/datatables/media/js/dataTables.bootstrap.min.js",
+        "./public/vendor/angular/angular.min.js",
+        "./public/vendor/angular-sanitize/angular-sanitize.min.js",
+        "./public/vendor/angular-animate/angular-animate.min.js",
+        "./public/vendor/angular-ui-router/release/angular-ui-router.min.js",
+        "./public/vendor/angular-moment/angular-moment.min.js",
+        "./public/vendor/angular-growl-v2/build/angular-growl.min.js",
+        // "./public/vendor/stacktrace-js/dist/stacktrace.min.js",
+        // "./public/vendor/angular-ui-mask/dist/mask.min.js",
+        "./public/vendor/angular-jwt/dist/angular-jwt.min.js",
+        // "./public/vendor/ngInfiniteScroll/build/ng-infinite-scroll.min.js",
+        "./public/vendor/angular-datatables/dist/angular-datatables.js",
+        // "./public/js/ui-bootstrap-custom-tpls-1.1.2.js",
+        // './public/vendor/ui-select/dist/select.js'
+        './public/vendor/lodash/dist/lodash.min.js',
+        './public/vendor/restangular/dist/restangular.min.js'
+
+    ];
+    for(var i = 0; i < sources.length; i++) {
+        if(!fs.statSync(path.resolve(sources[i]))) {
+            throw new Error('Source vendor file does not exist: ' + sources[i]);
+        }
+    }
+
+    return gulp.src(sources)
+        .pipe(concat('vendor.js'))
+        .pipe(gulp.dest('./public/build'))
+        .pipe(gulpif(argv.production, rev()))
+        .pipe(gulpif(argv.production, ngAnnotate()))
+        .pipe(gulpif(argv.production, uglify()))
+        .pipe(gulpif(argv.production, gulp.dest('./public/build')))
+        .pipe(gulpif(argv.production, rev.manifest({base: './public/build', merge: true})))
+        .pipe(gulpif(argv.production, gulp.dest('public/build')));
+    //.on('end', done);
 });
 
 function handleError(err) {

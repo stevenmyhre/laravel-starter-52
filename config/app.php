@@ -209,6 +209,9 @@ $ret = [
         'Validator' => Illuminate\Support\Facades\Validator::class,
         'View' => Illuminate\Support\Facades\View::class,
 
+        // Application aliases
+
+        'Context' => App\DOMAIN\Facades\Context::class,
     ],
 
 ];
