@@ -3,6 +3,9 @@
 namespace App\Http\Controllers\Auth;
 
 use App\DOMAIN\Models\User;
+use Context;
+use Input;
+use Session;
 use Validator;
 use App\Http\Controllers\Controller;
 use Illuminate\Foundation\Auth\ThrottlesLogins;
@@ -68,5 +71,20 @@ class AuthController extends Controller
             'email' => $data['email'],
             'password' => bcrypt($data['password']),
         ]);
+    }
+
+	public function redirectPath()
+	{
+		if(Input::has('intended_hash') && Input::get('intended_hash')[0] == '#') {
+			Session::flash('_hash', Input::get('intended_hash'));
+		}
+		if (property_exists($this, 'redirectPath')) {
+			return $this->redirectPath;
+		}
+
+		if(property_exists($this, 'redirectTo'))
+			return $this->redirectTo;
+
+		return Context::redirectToUserPage()->getTargetUrl();
     }
 }
